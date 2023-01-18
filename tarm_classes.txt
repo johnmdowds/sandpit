@@ -1,0 +1,964 @@
+I want to create some seed data for my database in my .NET 6 project.
+
+These are the classes that make up the tables
+
+    public class ErrorLog
+    {
+        public int? Id { get; set; }
+        public Employee Employee { get; set; }
+        public DateTime DateCreated { get; set; }        
+        public string Class { get; set; }
+        public string Method { get; set; }        
+        public int? LineNumber { get; set; }
+        public string Message { get; set; }
+        public Employee DeletedBy { get; set; }
+    }
+	
+	    public class EventLog
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public DateTime DateCreated { get; set; }
+
+        [Required]
+        public string Subject { get; set; }
+
+        [Required]
+        public string Message { get; set; }
+    }
+	
+	 public class Employee
+    {
+        public int? Id { get; set; }
+
+        public string Firstname { get; set; }
+
+        public string Surname { get; set; }
+
+        public string FullName { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public string Pid { get; set; }
+
+        public Team Team { get; set; }
+
+        public Employee Manager { get; set; }
+
+        public Role Role { get; set; }
+
+        public int? ControlledTeamBits { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public Theme Theme { get; set; }
+
+        public virtual ICollection<ProjectResource> ProjectResources { get; set; }
+
+        public virtual ICollection<NonProjectResource> NonProjectResources { get; set; }
+
+        public virtual ICollection<ProjectStakeholder> ProjectStakeholders { get; set; }
+
+        public Employee()
+        {
+            ProjectResources = new List<ProjectResource>();
+            NonProjectResources = new List<NonProjectResource>();
+            ProjectStakeholders = new List<ProjectStakeholder>();
+        }
+    }
+	
+	    public class Role
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public virtual ICollection<Employee> Employees { get; set; }
+
+        public Role()
+        {
+            Employees = new List<Employee>();
+        }
+    }
+	
+	    public class Department
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<Team> Teams { get; set; }
+
+        public Department()
+        {
+            Teams = new List<Team>();
+        }
+    }
+	
+	    public class Team
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public int? Bit { get; set; }
+
+        public bool AllowDiscoveryProjects { get; set; }
+
+        public bool ForceQAndIReviews { get; set; }
+
+        public bool AllowQAndIReviews { get; set; }
+
+        public bool AllowOrderBook { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public Department Department { get; set; }
+
+        public MilestoneGroup MilestoneGroup { get; set; }
+
+        public virtual ICollection<Employee> Employees { get; set; }
+
+        public virtual ICollection<ReportGroupTeam> ReportGroupTeams { get; set; }
+
+        public Team()
+        {
+            Employees = new List<Employee>();
+            ReportGroupTeams = new List<ReportGroupTeam>();
+        }
+    }
+	
+	    public class Notification
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public DateTime DateCreated { get; set; }
+
+        public Employee CreatedBy { get; set; }
+
+        [Required]
+        public string Subject { get; set; }
+
+        [Required]
+        public string Message { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<EmployeeNotification> EmployeeNotifications { get; set; }
+
+        public Notification()
+        {
+            EmployeeNotifications = new List<EmployeeNotification>();
+        }
+    }
+	
+	    public class EmployeeNotification
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public Notification Notification { get; set; }
+
+        public bool IsRead { get; set; }
+
+    }
+	
+	    public class RagStatus
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Colour { get; set; }
+
+        [Required]
+        public string TextColour { get; set; }
+
+    }
+	
+	    public class Project
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Reference { get; set; }
+
+        public string OriginalReference { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public ProjectType ProjectType { get; set; }
+
+        public bool IsDiscoveryProject { get; set; }
+
+        public bool IsOnOrder { get; set; }
+
+        public DateTime? DateOrderRejected { get; set; }
+
+        public bool HasQAndIReview { get; set; }
+
+        public DateTime? QualityReviewDeadline { get; set; }
+
+        public DateTime? ImpactReviewDeadline { get; set; }
+
+        public ProjectStatus ProjectStatus { get; set; }
+
+        [Required]
+        public RagStatus RagStatus { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public CustomerArea CustomerArea { get; set; }
+
+        [Required]
+        public DateTime ReceiptDate { get; set; }
+
+        [Required]
+        public Priority Priority { get; set; }
+
+        [Required]
+        public Employee Owner { get; set; }
+
+        public Team OwnerTeam { get; set; }
+
+        [Required]
+        public DateTime? StartDate { get; set; }
+
+        public bool HasAgreedCompletionDate { get; set; }
+
+        public DateTime? AgreedCompletionDate { get; set; }
+
+        public MilestoneGroup MilestoneGroup { get; set; }
+
+        public virtual ICollection<ProjectStatusChange> ProjectStatusChanges { get; set; }
+
+        public DateTime? ActualCompletionDate { get; set; }
+
+        public DateTime? GDPRReviewDate { get; set; }
+
+        public DateTime? ArchivedDate { get; set; }
+
+        public decimal? FullTimeEquivalent { get; set; }
+
+        public virtual ICollection<Note> Notes { get; set; }
+
+        public virtual ICollection<ProjectMilestone> ProjectMilestones { get; set; }
+
+        public virtual ICollection<ProjectResource> ProjectResources { get; set; }
+
+        public virtual ICollection<ProjectStakeholder> Stakeholders { get; set; }
+
+        public Project()
+        {
+            ProjectStatusChanges = new List<ProjectStatusChange>();
+            Notes = new List<Note>();
+            ProjectMilestones = new List<ProjectMilestone>();
+            ProjectResources = new List<ProjectResource>();
+            Stakeholders = new List<ProjectStakeholder>();
+        }
+		
+		    public class QualityAndImpactReview
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        public DateTime? QualityReviewDate { get; set; }
+
+        public string QualityReviewNotes { get; set; }
+
+        public virtual ICollection<QualityResult> QualityResults { get; set; }
+
+        public DateTime? QualityReviewChangedDate { get; set; }
+
+        public DateTime? ExternalQualityReviewDate { get; set; }
+
+        public string ExternalQualityReviewNotes { get; set; }
+
+        public virtual ICollection<ExternalQualityResult> ExternalQualityResults { get; set; }
+
+        public DateTime? ExternalQualityReviewChangedDate { get; set; }
+
+        public DateTime? ImpactReviewDate { get; set; }
+
+        public string ImpactReviewNotes { get; set; }
+
+        public bool? OverallManagementDecision { get; set; }
+
+        public virtual ICollection<ImpactResult> ImpactResults { get; set; }
+
+        public DateTime? ImpactReviewChangedDate { get; set; }
+
+        public QAndIReviewStatus QAndIReviewStatus { get; set; }
+
+        public ExternalQAndIReviewStatus ExternalQAndIReviewStatus { get; set; }
+
+        public ImpactQAndIReviewStatus ImpactQAndIReviewStatus { get; set; }
+
+        public QIInformedStrategyArea QIInformedStrategyArea { get; set; }
+
+        public QualityAndImpactReview()
+        {
+
+            QualityResults = new List<QualityResult>();
+            ExternalQualityResults = new List<ExternalQualityResult>();
+            ImpactResults = new List<ImpactResult>();
+
+        }
+		
+		    public class ProjectReference
+    {
+        public int? Id { get; set; }
+
+        public int? Year { get; set; }
+
+        public int? ProjectNumber { get; set; }
+
+    }
+    
+	    public class CustomerArea
+    {
+        public int? Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<Project> Projects { get; set; }
+
+        public CustomerArea()
+        {
+            Projects = new List<Project>();
+        }
+    }
+	
+	    public class ProjectType
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Display(Name = "Description")]
+        public string Description { get; set; }
+
+        [Required]
+        public int TeamBits { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+    }
+	
+	    public class ProjectStatus
+    {
+        public int? Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public bool CanEditProject { get; set; }
+
+        public bool AvailableAtCreation { get; set; }
+
+        public bool EndsProject { get; set; }
+
+        public bool IsTimeRecordable { get; set; }
+
+        public bool IsOrderBookStatus { get; set; }
+
+        public bool IsProjectStatus { get; set; }
+
+        public bool TriggersQAndIReview { get; set; }
+
+        public virtual ICollection<ProjectStatusChange> ProjectStatusChanges { get; set; }
+
+        public ProjectStatus()
+        {
+            ProjectStatusChanges = new List<ProjectStatusChange>();
+        }
+		
+		    public class ProjectStatusChange
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        [Required]
+        public ProjectStatus ProjectStatus { get; set; }
+
+        [Required]
+        public string ChangeReason { get; set; }
+
+        public string FromToMessage { get; set; }
+
+        public Employee ChangedBy { get; set; }
+
+        [Required]
+        public DateTime DateChanged { get; set; }
+
+    }
+    }
+	
+	    public class NonProjectActivity
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public bool IsAbsent { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<NonProjectResource> NonProjectResources { get; set; }
+
+    }
+	
+	    public class Milestone
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<GroupMilestone> GroupMilestones { get; protected set; }
+
+        public virtual ICollection<ProjectMilestone> ProjectMilestones {get; set;}
+
+        public Milestone()
+        {
+            GroupMilestones = new List<GroupMilestone>();
+            ProjectMilestones = new List<ProjectMilestone>();
+        }
+    }
+	
+	    public class MilestoneGroup
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; } 
+
+        public virtual ICollection<GroupMilestone> GroupMilestones { get; protected set; }
+
+        public virtual ICollection<Project> Projects { get; set; }
+
+        public MilestoneGroup()
+        {
+            GroupMilestones = new List<GroupMilestone>();
+            Projects = new List<Project>();
+        }
+
+    }
+	
+	    public class GroupMilestone
+    {
+        public int? Id { get; set; }
+
+        public MilestoneGroup MilestoneGroup { get; set; }
+
+        public Milestone Milestone { get; set; }
+
+    }
+	
+	    public class Note
+    {
+        public int? Id { get; set; }
+
+        public Project Project { get; set; }
+
+        public Employee Employee { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
+
+        public string Details { get; set; }
+
+    }
+	
+	  public class ProjectMilestone
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        [Required]
+        public Milestone Milestone { get; set; }
+
+        [Required]
+        public DateTime DateCreated { get; set; }
+
+        [Required]
+        public Employee CreatedBy { get; set; }
+
+        [Required]
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        [Required]
+        public RagStatus RagStatus { get; set; }
+
+        public virtual ICollection<ProjectMilestoneStatusChange> ProjectMilestoneStatusChanges { get; set; }
+
+        public ProjectMilestone()
+        {
+            ProjectMilestoneStatusChanges = new List<ProjectMilestoneStatusChange>();
+        }
+    }
+	
+	    public class ProjectMilestoneStatusChange
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        public ProjectMilestone ProjectMilestone { get; set; }
+
+        [Required]
+        public RagStatus RagStatus { get; set; }
+
+        [Required]
+        public string ChangeReason { get; set; }
+
+        [Required]
+        public string FromToMessage { get; set; }
+
+        [Required]
+        public Employee ChangedBy { get; set; }
+
+        [Required]
+        public DateTime DateChanged { get; set; }
+
+    }
+	
+	    public class EmployeeNonProjectActivity
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public NonProjectActivity NonProjectActivity { get; set; }
+
+        public EmployeeNonProjectActivity()
+        {
+        }
+    }
+	
+	    public class EmployeeProjectActivity
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        public EmployeeProjectActivity()
+        {
+        }
+    }
+	
+	    public class ProjectResource
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        [Required]
+        public ProjectStatus ProjectStatus { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public DateTime? Date { get; set; }
+
+        public int? Minutes { get; set; }
+
+    }
+	
+	    public class NonProjectResource
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public NonProjectActivity NonProjectActivity { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        [Required]
+        public DateTime? Date { get; set; }
+
+        public int? Minutes { get; set; }
+
+    }
+	
+	    public class ReportNonProjectActivityGroup
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public NonProjectActivity NonProjectActivity { get; set; }
+
+        [Required]
+        public ReportTimeAllocationCategory ReportTimeAllocationCategory { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+        public virtual ICollection<NonProjectActivity> NonProjectActivities { get; set; }
+
+        public virtual ICollection<ReportTimeAllocationCategory> ReportTimeAllocationCategories { get; set; }
+
+        public ReportNonProjectActivityGroup()
+        {
+
+            NonProjectActivities = new List<NonProjectActivity>();
+            ReportTimeAllocationCategories = new List<ReportTimeAllocationCategory>();
+
+        }
+    }
+	
+	    public class ReportTimeAllocationCategory
+    {
+        public int? Id { get; set; }
+
+        public Department Department { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+    }
+	
+	    public class MonthlyReport
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+    }
+	
+	    public class MonthlyReportPeriod
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        public DateTime EndDate { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+    }
+	
+	    public class ReportTeamGroup
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; } 
+
+        [Required]
+        public Department Department { get; set; }
+
+        public virtual ICollection<ReportGroupTeam> ReportGroupTeams { get; set; }
+
+        public ReportTeamGroup()
+        {
+            ReportGroupTeams = new List<ReportGroupTeam>();
+        }
+    }
+	
+	    public class ReportGroupTeam
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Team Team { get; set; }
+
+        [Required]
+        public ReportTeamGroup ReportTeamGroup { get; set; }
+
+        public DateTime? DateCeased { get; set; } 
+
+    }
+	
+	    public class QualityQuestion
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Question { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+    }
+	
+	    public class QualityResult
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public QualityAndImpactReview QualityAndImpactReview { get; set; }
+
+        [Required]
+        public QualityQuestion QualityQuestion { get; set; }
+
+        public DateTime? DateCreated { get; set; }
+
+        public Employee AnsweredBy { get; set; }
+
+        public bool? Result { get; set; }
+
+    }
+	
+	    public class ExternalQualityQuestion
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Question { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+    }
+	
+	    public class ExternalQualityResult
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public QualityAndImpactReview QualityAndImpactReview { get; set; }
+
+        [Required]
+        public ExternalQualityQuestion ExternalQualityQuestion { get; set; }
+
+        public DateTime? DateCreated { get; set; }
+
+        public Employee AnsweredBy { get; set; }
+
+        public bool? Result { get; set; }
+
+    }
+	
+	    public class ImpactQuestion
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Question { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+    }
+	
+	    public class ImpactResult
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public QualityAndImpactReview QualityAndImpactReview { get; set; }
+
+        [Required]
+        public ImpactQuestion ImpactQuestion { get; set; }
+
+        public DateTime? DateCreated { get; set; }
+
+        public Employee AnsweredBy { get; set; }
+
+        public bool? Result { get; set; }
+    }
+	
+	    public class SavedSearch
+    {
+        public int? Id { get; set; }
+
+        public Employee Employee { get; set; }
+
+        public string Keyword { get; set; }
+
+        public ProjectType ProjectType { get; set; }
+
+        public ProjectStatus ProjectStatus { get; set; }
+
+        public Team Team { get; set; }
+
+        public Employee Owner { get; set; }
+
+        public bool SearchInternal { get; set; }
+
+        public bool SearchExternal { get; set; }
+
+        public bool SearchImpact { get; set; }
+
+        public QAndIReviewStatus QAndIReviewStatus { get; set; }
+
+        public bool UseDateRange { get; set; }
+
+        public SearchMode SearchMode { get; set; }
+
+        public DateTime? DateFrom { get; set; }
+
+        public DateTime? DateTo { get; set; }
+
+        public bool ShowOnlyLiveProjects { get; set; }
+
+        public bool ShowOnlyArchivedProjects { get; set; }
+
+    }
+	
+	    public class QAndIReviewStatus
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+    }
+	
+	    public class ExternalQAndIReviewStatus
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+    }
+	
+	    public class ImpactQAndIReviewStatus
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+    }
+	
+	    public class QIInformedStrategyArea
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+
+    }
+	
+	    public class Document
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        [Required]
+        public DocumentType DocumentType { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public string Url { get; set; }
+
+        public DateTime? DateCeased { get; set; }
+    }
+	
+	    public class ProjectStakeholder
+    {
+        public int? Id { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
+
+        [Required]
+        public Employee Employee { get; set; }
+
+        public ProjectStakeholder()
+        {
+        }
+    }
+
+	
+    
